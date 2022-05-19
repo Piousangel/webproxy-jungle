@@ -1,7 +1,32 @@
 <html>
-<head><title>test</title></head>
-<body> 
-<img align="middle" src="godzilla.gif">
-Dave O'Hallaron
+<head>
+    <title>test</title>
+
+<style>
+    div {
+        margin: 50px;
+        padding: 10px;
+    }
+
+</style>
+
+</head>
+<body>
+    <div >
+        <img src="godzilla.gif">
+        Dave O'Hallaron
+        <video height="180" width="288" controls>
+            <source src="/samplevideo.mp4" type="video/mp4">
+        </video>
+    </div> 
+    <div>
+        <form action="cgi-bin/adder" method="get">
+            <label for="num1">First Number : </label>
+            <input type="text" id="num1" name="num1" required minlength="1" maxlength="8" size="10"></br></br>
+            <label for="num2">Second Number : </label>
+            <input type="text" id="num2" name="num2" required minlength="1" maxlength="8" size="10"></br></br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
 </body>
 </html>

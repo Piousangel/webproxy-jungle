@@ -772,24 +772,52 @@ ssize_t rio_readn(int fd, void *usrbuf, size_t n)
  * rio_writen - Robustly write n bytes (unbuffered)
  */
 /* $begin rio_writen */
-ssize_t rio_writen(int fd, void *usrbuf, size_t n) 
+
+ssize_t rio_writen(int fd, void *usrbuf, size_t n)
 {
     size_t nleft = n;
     ssize_t nwritten;
     char *bufp = usrbuf;
-
-    while (nleft > 0) {
-	if ((nwritten = write(fd, bufp, nleft)) <= 0) {
-	    if (errno == EINTR)  /* Interrupted by sig handler return */
-		nwritten = 0;    /* and call write() again */
-	    else
-		return -1;       /* errno set by write() */
-	}
-	nleft -= nwritten;
-	bufp += nwritten;
+    printf("filesize: %d\n", n);
+    while (nleft > 0)
+    {
+        if ((nwritten = write(fd, bufp, nleft)) <= 0)
+        {
+            if (errno == EINTR) /* Interrupted by sig handler return */
+                nwritten = 0;   /* and call write() again */
+            else
+            {
+                printf("end2\n");
+                return -1; /* errno set by write() */
+            }
+        }
+        nleft -= nwritten;
+        printf("leftsize: %d\n", nleft);
+        bufp += nwritten;
+        if (nleft)
+            usleep(50);
     }
+    printf("end1\n");
     return n;
 }
+// ssize_t rio_writen(int fd, void *usrbuf, size_t n) 
+// {
+//     size_t nleft = n;
+//     ssize_t nwritten;
+//     char *bufp = usrbuf;
+
+//     while (nleft > 0) {
+// 	if ((nwritten = write(fd, bufp, nleft)) <= 0) {
+// 	    if (errno == EINTR)  /* Interrupted by sig handler return */
+// 		nwritten = 0;    /* and call write() again */
+// 	    else
+// 		return -1;       /* errno set by write() */
+// 	}
+// 	nleft -= nwritten;
+// 	bufp += nwritten;
+//     }
+//     return n;
+// }
 /* $end rio_writen */
 
 
@@ -834,7 +862,7 @@ static ssize_t rio_read(rio_t *rp, char *usrbuf, size_t n)
  * rio_readinitb - Associate a descriptor with a read buffer and reset buffer
  */
 /* $begin rio_readinitb */
-void rio_readinitb(rio_t *rp, int fd) 
+void rio_readinitb(rio_t *rp, int fd)
 {
     rp->rio_fd = fd;  
     rp->rio_cnt = 0;  
@@ -994,6 +1022,8 @@ int open_clientfd(char *hostname, char *port) {
  *       -1 with errno set for other errors.
  */
 /* $begin open_listenfd */
+
+// getaddrinfo, socket, bind, listen의 역할들을 한번에 수행한다.
 int open_listenfd(char *port) 
 {
     struct addrinfo hints, *listp, *p;
